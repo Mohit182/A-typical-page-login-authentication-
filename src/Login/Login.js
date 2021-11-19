@@ -4,6 +4,17 @@ import Card from "../UI/Card/Card";
 import classes from "./Login.module.css";
 
 const Login = (props) => {
+  const emailcheck =
+    /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  const passwordcheck = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+
+  const echeck = (email) => {
+    return emailcheck.test(email);
+  };
+  const pcheck = (pass) => {
+    return passwordcheck.test(pass);
+  };
+
   const [enteredEmail, setEnteredEmail] = useState("");
   const [isValidEmail, setIsValidEmail] = useState();
   const [enteredPassword, setEnteredPassword] = useState("");
@@ -12,31 +23,18 @@ const Login = (props) => {
 
   const emailChangeHandler = (event) => {
     setEnteredEmail(event.target.value);
-    setIsValidForm(
-      // validateEmailHandler(event.target.value) &&
-      //   validatePasswordHandler(enteredPassword)
-      event.target.value.includes("@") && enteredPassword.trim().length > 6
-    );
+    setIsValidForm(echeck(event.target.value) && pcheck(enteredPassword));
   };
   const passwordChangeHandler = (event) => {
     setEnteredPassword(event.target.value);
-    setIsValidForm(
-      // validateEmailHandler(enteredEmail) &&
-      //   validatePasswordHandler(event.target.value)
-      enteredEmail.includes("@") && event.target.value.trim().length > 6
-    );
+    setIsValidForm(echeck(enteredEmail) && pcheck(event.target.value));
   };
 
   const validateEmailHandler = () => {
-    // const re =
-    //   /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    // setIsValidEmail(re.test(enteredEmail));
-    setIsValidEmail(enteredEmail.includes("@"));
+    setIsValidEmail(emailcheck.test(enteredEmail));
   };
   const validatePasswordHandler = () => {
-    // const re = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
-    // setIsValidPassword(re.test(enteredPassword));
-    setIsValidPassword(enteredPassword.trim().length > 6);
+    setIsValidPassword(passwordcheck.test(enteredPassword));
   };
 
   const submitHandler = (event) => {
