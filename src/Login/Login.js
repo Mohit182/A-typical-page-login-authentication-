@@ -2,30 +2,41 @@ import react, { useState } from "react";
 import Button from "../UI/Button/Button";
 import Card from "../UI/Card/Card";
 import classes from "./Login.module.css";
+
 const Login = (props) => {
   const [enteredEmail, setEnteredEmail] = useState("");
-  const [isValidEmail, setIsValidEmail] = useState(false);
+  const [isValidEmail, setIsValidEmail] = useState();
   const [enteredPassword, setEnteredPassword] = useState("");
-  const [isValidPassword, setIsValidPassword] = useState(false);
+  const [isValidPassword, setIsValidPassword] = useState();
   const [isValidForm, setIsValidForm] = useState(false);
 
   const emailChangeHandler = (event) => {
     setEnteredEmail(event.target.value);
-    setIsValidForm(validateEmailHandler && validatePasswordHandler);
+    setIsValidForm(
+      // validateEmailHandler(event.target.value) &&
+      //   validatePasswordHandler(enteredPassword)
+      event.target.value.includes("@") && enteredPassword.trim().length > 6
+    );
   };
   const passwordChangeHandler = (event) => {
     setEnteredPassword(event.target.value);
-    setIsValidForm(validateEmailHandler && validatePasswordHandler);
+    setIsValidForm(
+      // validateEmailHandler(enteredEmail) &&
+      //   validatePasswordHandler(event.target.value)
+      enteredEmail.includes("@") && event.target.value.trim().length > 6
+    );
   };
 
-  const validateEmailHandler = (email) => {
-    const re =
-      /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    setIsValidEmail(re.test(email));
+  const validateEmailHandler = () => {
+    // const re =
+    //   /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    // setIsValidEmail(re.test(enteredEmail));
+    setIsValidEmail(enteredEmail.includes("@"));
   };
-  const validatePasswordHandler = (password) => {
-    const re = /^(?=.*[A-Za-z])(?=.*d)[A-Za-zd]{8,}$/;
-    setIsValidPassword(re.test(password));
+  const validatePasswordHandler = () => {
+    // const re = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+    // setIsValidPassword(re.test(enteredPassword));
+    setIsValidPassword(enteredPassword.trim().length > 6);
   };
 
   const submitHandler = (event) => {
