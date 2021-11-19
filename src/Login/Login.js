@@ -1,4 +1,4 @@
-import react, { useState } from "react";
+import react, { useEffect, useState } from "react";
 import Button from "../UI/Button/Button";
 import Card from "../UI/Card/Card";
 import classes from "./Login.module.css";
@@ -20,6 +20,10 @@ const Login = (props) => {
   const [enteredPassword, setEnteredPassword] = useState("");
   const [isValidPassword, setIsValidPassword] = useState();
   const [isValidForm, setIsValidForm] = useState(false);
+
+  useEffect(() => {
+    setIsValidForm(echeck(enteredEmail) && pcheck(enteredPassword));
+  }, [enteredEmail, enteredPassword]);
 
   const emailChangeHandler = (event) => {
     setEnteredEmail(event.target.value);
