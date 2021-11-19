@@ -22,7 +22,23 @@ const Login = (props) => {
   const [isValidForm, setIsValidForm] = useState(false);
 
   useEffect(() => {
-    setIsValidForm(echeck(enteredEmail) && pcheck(enteredPassword));
+    console.log("Effect Running");
+
+    return () => {
+      console.log("Cleanup");
+    };
+  }, []);
+
+  useEffect(() => {
+    const identifier = setTimeout(() => {
+      console.log("Checking Form Validity! ");
+      setIsValidForm(echeck(enteredEmail) && pcheck(enteredPassword));
+    }, 500);
+
+    return () => {
+      console.log("CleanUp");
+      clearTimeout(identifier);
+    };
   }, [enteredEmail, enteredPassword]);
 
   const emailChangeHandler = (event) => {
