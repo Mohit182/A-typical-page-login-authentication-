@@ -1,7 +1,18 @@
-import react, { useEffect, useState } from "react";
+import react, { useEffect, useReducer, useState } from "react";
 import Button from "../UI/Button/Button";
 import Card from "../UI/Card/Card";
 import classes from "./Login.module.css";
+
+const emailReducer = (state, action) => {
+  if (action.type === "USER_INPUT") {
+    return {
+      ...state,
+      value: action.val,
+      isValid: echeck(action.val),
+    };
+  }
+  return { value: "", isValid: false };
+};
 
 const Login = (props) => {
   const emailcheck =
@@ -15,11 +26,16 @@ const Login = (props) => {
     return passwordcheck.test(pass);
   };
 
-  const [enteredEmail, setEnteredEmail] = useState("");
-  const [isValidEmail, setIsValidEmail] = useState();
+  // const [enteredEmail, setEnteredEmail] = useState("");
+  // const [isValidEmail, setIsValidEmail] = useState();
   const [enteredPassword, setEnteredPassword] = useState("");
   const [isValidPassword, setIsValidPassword] = useState();
   const [isValidForm, setIsValidForm] = useState(false);
+
+  const [emailState, dispatchEmail] = useReducer(emailReducer, {
+    value: "",
+    isValid: false,
+  });
 
   useEffect(() => {
     console.log("Effect Running");
@@ -29,29 +45,29 @@ const Login = (props) => {
     };
   }, []);
 
-  useEffect(() => {
-    const identifier = setTimeout(() => {
-      console.log("Checking Form Validity! ");
-      setIsValidForm(echeck(enteredEmail) && pcheck(enteredPassword));
-    }, 500);
+  // useEffect(() => {
+  //   const identifier = setTimeout(() => {
+  //     console.log("Checking Form Validity! ");
+  //     setIsValidForm(echeck(enteredEmail) && pcheck(enteredPassword));
+  //   }, 500);
 
-    return () => {
-      console.log("CleanUp");
-      clearTimeout(identifier);
-    };
-  }, [enteredEmail, enteredPassword]);
+  //   return () => {
+  //     console.log("CleanUp");
+  //     clearTimeout(identifier);
+  //   };
+  // }, [enteredEmail, enteredPassword]);
 
   const emailChangeHandler = (event) => {
-    setEnteredEmail(event.target.value);
+    dispatchEmail({ type: "USER_INPUT", val: event.target.value });
     setIsValidForm(echeck(event.target.value) && pcheck(enteredPassword));
   };
   const passwordChangeHandler = (event) => {
     setEnteredPassword(event.target.value);
-    setIsValidForm(echeck(enteredEmail) && pcheck(event.target.value));
+    setIsValidForm(emailState.isValid && pcheck(event.target.value));
   };
 
   const validateEmailHandler = () => {
-    setIsValidEmail(emailcheck.test(enteredEmail));
+    setIsValidEmail(emailState.isValid);
   };
   const validatePasswordHandler = () => {
     setIsValidPassword(passwordcheck.test(enteredPassword));
@@ -59,7 +75,7 @@ const Login = (props) => {
 
   const submitHandler = (event) => {
     event.preventDefault();
-    props.onLogin(enteredEmail, enteredPassword);
+    props.onLogin(emailState.value, enteredPassword);
   };
 
   return (
@@ -67,14 +83,14 @@ const Login = (props) => {
       <form onSubmit={submitHandler}>
         <div
           className={`${classes.control} ${
-            isValidEmail === false ? classes.invalid : ""
+            emailState.isValid === false ? classes.invalid : ""
           }`}
         >
           <label htmlFor="email">E-Mail</label>
           <input
             type="email"
             id="email"
-            value={enteredEmail}
+            value={emailState.value}
             onChange={emailChangeHandler}
             onBlur={validateEmailHandler}
           />
